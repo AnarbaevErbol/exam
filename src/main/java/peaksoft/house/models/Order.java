@@ -1,17 +1,22 @@
 package peaksoft.house.models;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
 import peaksoft.house.enums.OrderStatus;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
+@Table(name = "orders")
+@Getter@Setter
+@NoArgsConstructor
+@ToString
 public class Order {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "dateTime")
@@ -22,5 +27,25 @@ public class Order {
 
     @Column(name = "status")
     private OrderStatus status;
+
+    @ManyToOne(cascade = {CascadeType.PERSIST,CascadeType.MERGE})
+    @ToString.Exclude
+    private Customer customer;
+
+    @OneToOne
+    private Address pointA;
+
+    @OneToOne
+    private Address pointB;
+
+    @ManyToOne
+    private Supplier supplier;
+
+    public Order(LocalDateTime date, int price, OrderStatus status) {
+        this.date = date;
+        this.price = price;
+        this.status = status;
+    }
+
 
 }
